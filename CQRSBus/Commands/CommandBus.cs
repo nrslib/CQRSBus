@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using CQRSBus.DI;
 
 namespace CQRSBus.Commands {
@@ -22,9 +21,8 @@ namespace CQRSBus.Commands {
             handlerTypes.Add(typeof(TCommand), typeof(THandler));
         }
 
-        public void RegisterInstance<TCommand, THandler>(THandler handler)
+        public void RegisterInstance<TCommand>(ICommandHandler<TCommand> handler)
             where TCommand : ICommand
-            where THandler : ICommandHandler<TCommand>
         {
             handlers.Add(typeof(TCommand), handler);
         }
@@ -44,10 +42,15 @@ namespace CQRSBus.Commands {
             {
                 return (ICommandHandler<TCommand>)searchedHandler;
             }
+
+            if (handlerTypes.TryGetValue(commandType, out var handlerType))
+            {
+                var commandHandler = (ICommandHandler<TCommand>)injector.Resolve(handlerType);
+                handlers[commandType] = commandHandler;
+                return commandHandler;
+            }
             
-            var commandHandler = injector.Resolve<ICommandHandler<TCommand>>();
-            handlers[commandType] = commandHandler;
-            return commandHandler;
+            throw new Exception($"Unregistered Handler(Type:{commandType}).");
         }
     }
 }

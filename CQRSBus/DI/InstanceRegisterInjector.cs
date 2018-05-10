@@ -22,17 +22,20 @@ namespace CQRSBus.DI {
         public TInstance Resolve<TInstance>()
         {
             var instanceType = typeof(TInstance);
-            if (instanceMap.TryGetValue(instanceType, out var instance))
-            {
-                return (TInstance)instance;
+            return (TInstance) Resolve(instanceType);
+        }
+
+        public object Resolve(Type type)
+        {
+            if (instanceMap.TryGetValue(type, out var instance)) {
+                return instance;
             }
 
-            if (createMethodMap.TryGetValue(instanceType, out var createMethod))
-            {
-                return (TInstance) createMethod();
+            if (createMethodMap.TryGetValue(type, out var createMethod)) {
+                return createMethod();
             }
 
-            throw new Exception($"Unregistered type(Type:{instanceType}).");
+            throw new Exception($"Unregistered type(Type:{type}).");
         }
     }
 }

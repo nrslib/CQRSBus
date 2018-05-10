@@ -46,6 +46,10 @@
     <Compile Include="DI\IInjector.cs" />
     <Compile Include="DI\InstanceRegisterInjector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\IQuery.cs" />
+    <Compile Include="Queries\IQueryHandler.cs" />
+    <Compile Include="Queries\IResponse.cs" />
+    <Compile Include="Queries\QueryBus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
